@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 using Xamarin.Forms;
 using AzureAD.Services;
+using System.Net.Http;
+using System.Net.Http.Headers;
 
 namespace AzureAD.Views
 {
@@ -17,10 +19,16 @@ namespace AzureAD.Views
 
         public static string clientId = "[在這裡填上用戶端識別碼]";
         public static string returnUri = "[在這裡填上重新導向URI]";
+        public static string webAPIUri = "[在這裡填上WebAPI的URI]";
 
         public static string authority = "https://login.windows.net/common";
-        private const string graphResourceUri = "https://graph.windows.net";
         public static string graphApiVersion = "2013-11-08";
+        
+        // 如果只進行App驗證，請使用下面的graphResourceUri
+        private const string graphResourceUri = "https://graph.windows.net";
+        // 如果要啟用WebAPI整合驗證，請使用下面的graphResourceUri
+        // private const string graphResourceUri = "[在這裡填上WebAPI的應用程式識別 URI]";
+
 
         IAuthenticator iAuth = DependencyService.Get<IAuthenticator>();
 
@@ -65,6 +73,14 @@ namespace AzureAD.Views
             var userName = data.UserInfo.GivenName + " " + data.UserInfo.FamilyName;
             await DisplayAlert("Token", userName, "Ok", "Cancel");
             lblLoginName.Text = userName;
+
+            var client = new HttpClient();
+            var request = new HttpRequestMessage(HttpMethod.Get, webAPIUri);
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", data.AccessToken);
+            var response = await client.SendAsync(request);
+            var content = await response.Content.ReadAsStringAsync();
+            await DisplayAlert("webapi", content, "Ok");
+
             btnLogout.IsVisible = true;
         }
     }
