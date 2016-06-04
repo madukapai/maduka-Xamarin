@@ -15,6 +15,7 @@ namespace AzureAD.Views
 {
     public partial class AzureADView : ContentPage
     {
+
         public static string clientId = "[在這裡填上用戶端識別碼]";
         public static string returnUri = "[在這裡填上重新導向URI]";
         public static string webAPIUri = "[在這裡填上WebAPI的URI]";
@@ -27,7 +28,7 @@ namespace AzureAD.Views
         private const string graphResourceUri = "https://graph.windows.net";
 
         // 如果要啟用WebAPI整合驗證，請使用下面的graphResourceUri
-        // private const string graphResourceUri = "[在這裡填上WebAPI的應用程式識別 URI]";
+        private const string graphAppResourceUri = "[在這裡填上WebAPI的應用程式識別 URI]";
 
         IAuthenticator iAuth = DependencyService.Get<IAuthenticator>();
 
@@ -57,22 +58,25 @@ namespace AzureAD.Views
         /// <param name="e"></param>
         private async void btnLogin_Click(object sender, EventArgs e)
         {
-            // 進行登入，並取得基本的AAD資訊
-            var objAuthResult = await iAuth.Authenticate(authority, graphResourceUri, clientId, returnUri);
-            var userName = objAuthResult.UserInfo.GivenName + " " + objAuthResult.UserInfo.FamilyName;
+            // 進行自訂應用程式識別Uri登入，並取得基本的AAD資訊
+            var objAppAuthResult = await iAuth.Authenticate(authority, graphAppResourceUri, clientId, returnUri);
+            // 進行graph.windows.net的登入
+            var objGraphAuthResult = await iAuth.Authenticate(authority, graphResourceUri, clientId, returnUri);
+
+            var userName = objAppAuthResult.UserInfo.GivenName + " " + objAppAuthResult.UserInfo.FamilyName;
             await DisplayAlert("Token", userName, "Ok", "Cancel");
             lblUserId.Text = userName;
 
-            // 取得 WebAPI上的資訊，並於WebAPI進行二次驗證
-            //var client = new HttpClient();
-            //var request = new HttpRequestMessage(HttpMethod.Get, webAPIUri);
-            //request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", objAuthResult.AccessToken);
-            //var response = await client.SendAsync(request);
-            //var content = await response.Content.ReadAsStringAsync();
-            //await DisplayAlert("webapi", content, "Ok");
+            // 取得 WebAPI上的資訊，並於WebAPI進行二次驗證(使用自訂應用程式識別Uri的驗證結果登入)
+            var client = new HttpClient();
+            var request = new HttpRequestMessage(HttpMethod.Get, webAPIUri);
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", objAppAuthResult.AccessToken);
+            var response = await client.SendAsync(request);
+            var content = await response.Content.ReadAsStringAsync();
+            await DisplayAlert("webapi", content, "Ok");
 
-            // 取得AAD中詳細的資訊
-            Models.AzureAD.UserProfile objProfile = await this.GetAADUserInfo(objAuthResult);
+            // 取得AAD中詳細的資訊 (使用graph.windows.net的驗證結果登入)
+            Models.AzureAD.UserProfile objProfile = await this.GetAADUserInfo(objGraphAuthResult);
             lblUserDisplayName.Text = objProfile.displayName;
 
             btnLogout.IsEnabled = true;
