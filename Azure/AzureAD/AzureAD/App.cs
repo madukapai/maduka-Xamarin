@@ -18,10 +18,13 @@ namespace AzureAD
             // 在下方選擇要嘗試的功能，並取消註解
 
             // 啟用AzureAD的登入畫面
-            MainPage = new AzureADView();
+            // MainPage = new AzureADView();
 
             // 啟用QRCode的畫面
             // MainPage = new QRCodeView();
+
+            // 啟用語音辨識的畫面
+            MainPage = new SpeechToTextView();
         }
 
         protected override void OnStart()

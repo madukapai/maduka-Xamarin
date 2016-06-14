@@ -9,6 +9,7 @@ using Android.OS;
 
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using Android.Content;
+using Android.Speech;
 
 namespace AzureAD.Droid
 {
@@ -25,8 +26,17 @@ namespace AzureAD.Droid
 
         protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
         {
+            // 如果回傳的requestCode是Enums.ActiveResultCode.SpeechToText, 就將結果回傳至SpeechToText的OnResult
+            if (requestCode == (int)Enums.ActiveResultCode.SpeechToText)
+            {
+                AzureAD.Droid.Services.SpeechToTextService.OnResult(resultCode, data);
+            }
+            else
+            {
+                AuthenticationAgentContinuationHelper.SetAuthenticationAgentContinuationEventArgs(requestCode, resultCode, data);
+            }
+
             base.OnActivityResult(requestCode, resultCode, data);
-            AuthenticationAgentContinuationHelper.SetAuthenticationAgentContinuationEventArgs(requestCode, resultCode, data);
         }
     }
 }
