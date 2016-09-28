@@ -37,13 +37,18 @@
   <ItemGroup>
     <Compile Include="App.cs" />
     <Compile Include="Models\AzureAD.cs" />
+    <Compile Include="Models\CameraResult.cs" />
     <Compile Include="Models\SpeechToTextResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\IAuthenticator.cs" />
+    <Compile Include="Services\ICamera.cs" />
     <Compile Include="Services\IQRCode.cs" />
     <Compile Include="Services\ISpeechToText.cs" />
     <Compile Include="Views\AzureADView.xaml.cs">
       <DependentUpon>AzureADView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CameraView.xaml.cs">
+      <DependentUpon>CameraView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\QRCodeView.xaml.cs">
       <DependentUpon>QRCodeView.xaml</DependentUpon>
@@ -91,6 +96,12 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Views\SpeechToTextView.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Views\CameraView.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
       <SubType>Designer</SubType>
     </EmbeddedResource>

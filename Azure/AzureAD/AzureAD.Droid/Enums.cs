@@ -17,6 +17,7 @@ namespace AzureAD.Droid
         public enum ActiveResultCode
         {
             SpeechToText = 10,
+            Camera = 20,
         }
     }
 }

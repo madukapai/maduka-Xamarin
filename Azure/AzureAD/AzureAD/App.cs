@@ -24,7 +24,10 @@ namespace AzureAD
             // MainPage = new QRCodeView();
 
             // 啟用語音辨識的畫面
-            MainPage = new SpeechToTextView();
+            // MainPage = new SpeechToTextView();
+
+            // 啟用照相的畫面
+            MainPage = new CameraView();
         }
 
         protected override void OnStart()

@@ -26,14 +26,22 @@ namespace AzureAD.Droid
 
         protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
         {
-            // 如果回傳的requestCode是Enums.ActiveResultCode.SpeechToText, 就將結果回傳至SpeechToText的OnResult
-            if (requestCode == (int)Enums.ActiveResultCode.SpeechToText)
+            if (resultCode == Result.Ok)
             {
-                AzureAD.Droid.Services.SpeechToTextService.OnResult(resultCode, data);
-            }
-            else
-            {
-                AuthenticationAgentContinuationHelper.SetAuthenticationAgentContinuationEventArgs(requestCode, resultCode, data);
+                // 如果回傳的requestCode是Enums.ActiveResultCode.SpeechToText, 就將結果回傳至SpeechToText的OnResult
+                if (requestCode == (int)Enums.ActiveResultCode.SpeechToText)
+                {
+                    AzureAD.Droid.Services.SpeechToTextService.OnResult(resultCode, data);
+                }
+                else if (requestCode == (int)Enums.ActiveResultCode.Camera)
+                {
+                    // 照像命令
+                    AzureAD.Droid.Services.CameraService.OnResult(resultCode);
+                }
+                else
+                {
+                    AuthenticationAgentContinuationHelper.SetAuthenticationAgentContinuationEventArgs(requestCode, resultCode, data);
+                }
             }
 
             base.OnActivityResult(requestCode, resultCode, data);
