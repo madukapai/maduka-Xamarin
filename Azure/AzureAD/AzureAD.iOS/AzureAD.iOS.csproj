@@ -91,6 +91,7 @@
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
     <Compile Include="Services\AuthenticatorService.cs" />
+    <Compile Include="Services\CameraService.cs" />
     <Compile Include="Services\QRCodeService.cs" />
     <None Include="Entitlements.plist" />
     <None Include="Info.plist" />
